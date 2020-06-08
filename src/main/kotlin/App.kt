@@ -1,36 +1,36 @@
+import processor.BaseProcessor
+import processor.RequestProcessor
+import utils.ConsoleUtility
+import java.io.BufferedReader
+import java.io.InputStreamReader
+
 /**
  * Created by Pallaw Pathak on 08/06/20. - https://www.linkedin.com/in/pallaw-pathak-a6a324a1/
  */
 object App {
+
+    val requestProcessor: BaseProcessor = RequestProcessor()
+
     @JvmStatic
     fun main(args: Array<String>) {
         //app related info
-        aboutProject()
+        ConsoleUtility.printAboutProject()
 
         //list of available commands
-        availableCommands()
-    }
+        ConsoleUtility.showAvailableCommands()
 
-    fun aboutProject() {
-        println(
-            """
-    |###################################################################################################################
-    |#########################################      PARKING LOT     ####################################################
-    |###################################################################################################################                        
-    |""".trimMargin()
-        )
-    }
+        //show command example
+        ConsoleUtility.showCommandInstructions()
 
-    fun availableCommands() {
-        println(
-            """
-    |######### Please Enter one of the below commands. Replace variables (written in capitals) with your values ########
-    |
-    |A) Create parking lot of size n                        ---> create_parking_lot {CAPACITY}
-    |B) Park a car                                          ---> park {CAR_NUMBER}
-    |C) Remove(Unpark) car from                             ---> leave {CAR_NUMBER} {HOURS}
-    |D) Print status of parking slot                        ---> status
-    |""".trimMargin()
-        )
+        while (true) {
+            val bufferReader = BufferedReader(InputStreamReader(System.`in`))
+            var input = bufferReader.readLine().trim()
+
+            if (requestProcessor.validate(input)) {
+                requestProcessor.execute(input)
+            } else
+                ConsoleUtility.showCommandInstructions()
+
+        }
     }
 }
