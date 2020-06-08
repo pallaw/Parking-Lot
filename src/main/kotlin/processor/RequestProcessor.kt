@@ -6,6 +6,7 @@ import exception.ParkingException
 import model.Car
 import service.manager.ParkingServiceManager
 import utils.ConsoleUtility
+import java.lang.Exception
 import kotlin.system.exitProcess
 
 /**
@@ -14,9 +15,9 @@ import kotlin.system.exitProcess
 class RequestProcessor : BaseProcessor {
     override fun execute(command: String) {
         val inputs = command.split(" ")
-        val key = inputs[0]
+        val commandKey = inputs[0]
 
-        when (key) {
+        when (commandKey) {
             Command.HELP.inputCommand -> {
                 ConsoleUtility.showAvailableCommands()
             }
@@ -28,12 +29,35 @@ class RequestProcessor : BaseProcessor {
                     val capacity: Int = inputs[1].toInt()
                     ParkingServiceManager.createParkingLot(capacity)
                 } catch (e: NumberFormatException) {
-                    throw ParkingException(ConsoleMessage.ERROR_INVALID_VALUE.message.replace("{variable}", "capacity"))
+                    throw ParkingException(String.format(ConsoleMessage.ERROR_INVALID_VALUE.message, "{CAPACITY}", command))
                 }
             }
 
             Command.PARK.inputCommand -> {
-                ParkingServiceManager.parkVehicle(Car(inputs[1]))
+                try {
+                    ParkingServiceManager.parkVehicle(Car(inputs[1]))
+                } catch (e: ParkingException) {
+                    throw e
+                }
+            }
+
+            Command.LEAVE.inputCommand -> {
+                var registrationNumber: String = ""
+                val hour: Int
+                try {
+                    registrationNumber = inputs[1]
+                    hour = inputs[2].toInt()
+                    ParkingServiceManager.leave(registrationNumber, hour)
+                } catch (e: Exception) {
+                    when(e){
+                        is NumberFormatException ->{
+                            throw ParkingException(String.format(ConsoleMessage.ERROR_INVALID_VALUE.message, "{HOURS}", command))// incorrect input for hour
+                        }
+                        is ParkingException ->{
+                            throw e
+                        }
+                    }
+                }
             }
         }
     }

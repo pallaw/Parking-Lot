@@ -1,8 +1,10 @@
+import exception.ConsoleMessage
 import exception.ParkingException
 import processor.BaseProcessor
 import processor.RequestProcessor
 import utils.ConsoleUtility
 import java.io.BufferedReader
+import java.io.File
 import java.io.InputStreamReader
 
 /**
@@ -23,6 +25,41 @@ object App {
         //show command example
         ConsoleUtility.showCommandInstructions()
 
+        when(args.size) {
+            0 -> {// Interective session
+                startInterectiveSession()
+            }
+            1 -> {
+                startFileInputSession(args[0])
+            }
+            else -> {
+                ConsoleUtility.showError(ConsoleMessage.ERROR_WRONG_FILE_NAME.message)
+            }
+        }
+
+
+    }
+
+    private fun startFileInputSession(filePath: String) {
+        try {
+            val inputFile = File(filePath)
+            inputFile.readText().split("\n").forEachIndexed { index, command ->
+                if (requestProcessor.validate(command)){
+                    try {
+                        requestProcessor.execute(command)
+                    } catch (parkingException: Exception) {
+                        ConsoleUtility.showError(parkingException.message)
+                    }
+                }else {// wrong command
+                    ConsoleUtility.showError(String.format(ConsoleMessage.ERROR_FILE_LINE.message, index.toString()))
+                }
+            }
+        } catch (e: Exception) {
+            throw ParkingException(ConsoleMessage.ERROR_FILE_INVALID.message, e)
+        }
+    }
+
+    private fun startInterectiveSession() {
         while (true) {
             val bufferReader = BufferedReader(InputStreamReader(System.`in`))
             var input = bufferReader.readLine().trim()
@@ -30,7 +67,7 @@ object App {
             if (requestProcessor.validate(input)) {
                 try {
                     requestProcessor.execute(input)
-                }catch (parkingException: ParkingException) {
+                }catch (parkingException: Exception) {
                     ConsoleUtility.showError(parkingException.message)
                 }
             } else

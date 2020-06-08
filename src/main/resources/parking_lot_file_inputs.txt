@@ -1,0 +1,5 @@
+create_parking_lot 2
+park HR-26-DB-1104
+park HR-26-DB-1105
+leave HR-26-DB-1105 4
+leave HR-26-DB-1105 4

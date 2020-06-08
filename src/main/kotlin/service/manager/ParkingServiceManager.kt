@@ -14,7 +14,7 @@ object ParkingServiceManager : ParkingService {
 
     private var capacity: Int = 0
     private val parkingStrategy: NearestFirstParkingStrategy = NearestFirstParkingStrategy()
-    private val parkingMap: HashMap<Int, Vehicle> = HashMap()
+    private val vehicleMap: HashMap<String, Pair<Int, Vehicle>> = HashMap()
 
 
     @Throws(ParkingException::class)
@@ -25,19 +25,37 @@ object ParkingServiceManager : ParkingService {
             for (slotNo in 1..capacity) {
                 parkingStrategy.addSlot(slotNo)
             }
-            println(ConsoleMessage.SUCCESS_CREATE_PARKING.message.replace("{variable}", capacity.toString()))
+            println(String.format(ConsoleMessage.SUCCESS_CREATE_PARKING.message, capacity))
         } else
             throw ParkingException(ConsoleMessage.ERROR_CREATE_PARKING.message)
     }
 
+    @Throws(ParkingException::class)
     override fun parkVehicle(car: Car) {
         try {
             val slotNumber = parkingStrategy.getSlot()
-            parkingMap.put(slotNumber, car)
+            vehicleMap.put(car.regNumber, Pair(slotNumber, car))
             parkingStrategy.removeSlot(slotNumber)
-            println(ConsoleMessage.SUCCESS_PARK.message.replace("{variable}", slotNumber.toString()))
+            println(String.format(ConsoleMessage.SUCCESS_PARK.message, slotNumber))
         } catch (e: Exception) {
-            println(ConsoleMessage.ERROR_PARK.message)
+            throw ParkingException(ConsoleMessage.ERROR_PARK.message)
         }
     }
+
+    @Throws(ParkingException::class)
+    override fun leave(registrationNumber: String, hour: Int) {
+        val vehicleInfo = vehicleMap.get(registrationNumber)
+        if (null == vehicleInfo) {
+            throw ParkingException(String.format(ConsoleMessage.ERROR_LEAVE.message, registrationNumber))
+        } else {
+            val totalFare = FareManager.calculateFare(hour)
+            val slot = vehicleInfo.first
+
+            parkingStrategy.addSlot(slot)
+            vehicleMap.remove(registrationNumber)
+
+            println(String.format(ConsoleMessage.SUCCESS_LEAVE.message, registrationNumber, slot, totalFare))
+        }
+    }
+
 }

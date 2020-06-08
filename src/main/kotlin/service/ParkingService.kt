@@ -11,4 +11,6 @@ interface ParkingService: BaseService {
     fun createParkingLot(capacity: Int)
 
     fun parkVehicle(car: Car)
+    fun leave(registrationNumber: String, hour: Int)
+
 }
