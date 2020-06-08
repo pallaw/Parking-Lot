@@ -7,4 +7,6 @@ enum class ConsoleMessage(var message: String) {
     ERROR_CREATE_PARKING("Sorry Parking Already Created, It CAN NOT be recreated."),
     SUCCESS_CREATE_PARKING("Created parking lot with {variable} slots"),
     ERROR_INVALID_VALUE("{variable} value is incorrect"),
+    SUCCESS_PARK("Allocated slot number: {variable}"),
+    ERROR_PARK("Sorry, parking lot is full"),
 }
