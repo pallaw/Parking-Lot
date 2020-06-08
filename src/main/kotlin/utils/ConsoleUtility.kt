@@ -39,4 +39,7 @@ object ConsoleUtility {
         )
     }
 
+    fun showError(message: String?) {
+        println(message)
+    }
 }

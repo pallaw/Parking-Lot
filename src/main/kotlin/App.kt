@@ -1,3 +1,4 @@
+import exception.ParkingException
 import processor.BaseProcessor
 import processor.RequestProcessor
 import utils.ConsoleUtility
@@ -27,7 +28,11 @@ object App {
             var input = bufferReader.readLine().trim()
 
             if (requestProcessor.validate(input)) {
-                requestProcessor.execute(input)
+                try {
+                    requestProcessor.execute(input)
+                }catch (parkingException: ParkingException) {
+                    ConsoleUtility.showError(parkingException.message)
+                }
             } else
                 ConsoleUtility.showCommandInstructions()
 

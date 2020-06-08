@@ -1,6 +1,9 @@
 package processor
 
 import command.Command
+import exception.ConsoleMessage
+import exception.ParkingException
+import service.manager.ParkingServiceManager
 import utils.ConsoleUtility
 import kotlin.system.exitProcess
 
@@ -18,6 +21,14 @@ class RequestProcessor : BaseProcessor {
             }
             Command.EXIT.inputCommand -> {
                 exitProcess(0)
+            }
+            Command.CREATE_PARKING.inputCommand -> {
+                try {
+                    val capacity: Int = inputs[1].toInt()
+                    ParkingServiceManager.createParkingLot(capacity)
+                } catch (e: NumberFormatException) {
+                    throw ParkingException(ConsoleMessage.ERROR_INVALID_VALUE.message.replace("{variable}", "capacity"))
+                }
             }
         }
     }
