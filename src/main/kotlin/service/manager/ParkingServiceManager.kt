@@ -58,4 +58,12 @@ object ParkingServiceManager : ParkingService {
         }
     }
 
+    override fun status() {
+        println("Slot No.\tRegistration No.")
+        vehicleMap.keys.forEach { registrationNo ->
+            val vehicleInfo = vehicleMap.get(registrationNo)
+            println("${vehicleInfo?.first}\t\t\t${registrationNo}")
+        }
+    }
+
 }

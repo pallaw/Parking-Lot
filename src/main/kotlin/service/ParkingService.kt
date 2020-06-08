@@ -12,5 +12,6 @@ interface ParkingService: BaseService {
 
     fun parkVehicle(car: Car)
     fun leave(registrationNumber: String, hour: Int)
+    fun status()
 
 }

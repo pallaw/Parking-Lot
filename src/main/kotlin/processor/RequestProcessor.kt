@@ -59,6 +59,10 @@ class RequestProcessor : BaseProcessor {
                     }
                 }
             }
+
+            Command.STATUS.inputCommand -> {
+                ParkingServiceManager.status()
+            }
         }
     }
 }

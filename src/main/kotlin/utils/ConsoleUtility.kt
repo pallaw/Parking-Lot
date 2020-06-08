@@ -40,7 +40,6 @@ object ConsoleUtility {
     }
 
     fun showError(message: String?) {
-        println()
         println(message)
     }
 }

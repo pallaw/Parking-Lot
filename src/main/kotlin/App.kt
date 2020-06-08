@@ -51,7 +51,7 @@ object App {
                         ConsoleUtility.showError(parkingException.message)
                     }
                 }else {// wrong command
-                    ConsoleUtility.showError(String.format(ConsoleMessage.ERROR_FILE_LINE.message, index.toString()))
+                    ConsoleUtility.showError(String.format(ConsoleMessage.ERROR_FILE_LINE.message, index))
                 }
             }
         } catch (e: Exception) {
@@ -68,6 +68,7 @@ object App {
                 try {
                     requestProcessor.execute(input)
                 }catch (parkingException: Exception) {
+                    parkingException.printStackTrace()
                     ConsoleUtility.showError(parkingException.message)
                 }
             } else
